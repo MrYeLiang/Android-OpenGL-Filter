@@ -5,6 +5,7 @@ import android.hardware.Camera;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 
+import com.yeliang.filter.CameraFilter;
 import com.yeliang.filter.ScreenFilter;
 import com.yeliang.utils.CameraHelper;
 
@@ -21,17 +22,23 @@ import javax.microedition.khronos.opengles.GL10;
 public class CommonRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameAvailableListener {
 
     private GLSurfaceView mSurfaceView;
+
     private CameraHelper mCameraHelper;
+
     private int[] mTextures;
+
     private SurfaceTexture mSurfaceTexture;
+
+    private CameraFilter mCameraFilter;
     private ScreenFilter mScreenFilter;
+
     private float[] mtx = new float[16];
 
-    public CommonRender(GLSurfaceView surfaceView) {
+    CommonRender(GLSurfaceView surfaceView) {
         mSurfaceView = surfaceView;
     }
 
-    public void openCamera(int width, int height) {
+    void openCamera(int width, int height) {
         if (mCameraHelper == null) {
             mCameraHelper = new CameraHelper(Camera.CameraInfo.CAMERA_FACING_BACK, width, height);
         }
@@ -39,7 +46,7 @@ public class CommonRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFr
         mCameraHelper.startPreview(mSurfaceTexture);
     }
 
-    public void closeCamera() {
+    void closeCamera() {
         if (mCameraHelper != null) {
             mCameraHelper.stopPreview();
         }
@@ -49,28 +56,44 @@ public class CommonRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFr
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
 
-
         mTextures = new int[1];
+        //1 创建Texture
         GLES20.glGenTextures(mTextures.length, mTextures, 0);
+
+        //2 创建SurfaceTexture
         mSurfaceTexture = new SurfaceTexture(mTextures[0]);
+
         mSurfaceTexture.setOnFrameAvailableListener(this);
 
+        mCameraFilter = new CameraFilter(mSurfaceView.getContext());
         mScreenFilter = new ScreenFilter(mSurfaceView.getContext());
     }
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-        mScreenFilter.onReady(width, height);
+        mCameraFilter.onReady(width, height);
+        mScreenFilter.onReady(width,height);
     }
 
 
     @Override
     public void onDrawFrame(GL10 gl10) {
+        //1 清屏 表示把屏幕清理为什么颜色
         GLES20.glClearColor(0, 0, 0, 0);
+
+        //2 执行 glClearColor传的屏幕颜色
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+
+        //3 更新纹理，这一步骤之后才能从SurfaceTexture中获得数据来渲染
         mSurfaceTexture.updateTexImage();
+
+        //4 获取变换矩阵
         mSurfaceTexture.getTransformMatrix(mtx);
-        mScreenFilter.onDrawFrame(mTextures[0], mtx);
+
+        mCameraFilter.setMatrix(mtx);
+
+        int textureId = mCameraFilter.onDrawFrame(mTextures[0]);
+        mScreenFilter.onDrawFrame(textureId);
     }
 
     /*==========================================================*/

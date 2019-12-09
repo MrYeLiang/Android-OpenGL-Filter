@@ -17,8 +17,6 @@ import java.util.List;
  */
 
 public class CameraHelper {
-
-
     private final int mCameraId;
     private SurfaceTexture mSurfaceTexture;
     private Camera mCamera;
@@ -50,8 +48,6 @@ public class CameraHelper {
         setPreviewSize(parameters);
         mCamera.setParameters(parameters);
 
-
-
         try {
             mCamera.setPreviewTexture(mSurfaceTexture);
             mCamera.startPreview();
@@ -67,11 +63,8 @@ public class CameraHelper {
 
         int m = Math.abs(size.height * size.width - mWidth * mHeight);
         supportedPreviewSizes.remove(0);
-        Iterator<Camera.Size> iterator = supportedPreviewSizes.iterator();
 
-        while (iterator.hasNext()) {
-            Camera.Size next = iterator.next();
-
+        for (Camera.Size next : supportedPreviewSizes) {
             Log.i("CameraHelper", "support mWidth = " + next.width + "mHeight = " + next.height);
 
             int n = Math.abs(next.height * next.width - mWidth * mHeight);
@@ -95,6 +88,7 @@ public class CameraHelper {
         if (mCamera != null) {
             mCameraIsOpen = false;
             mCamera.stopPreview();
+            mCamera.release();
         }
     }
 }

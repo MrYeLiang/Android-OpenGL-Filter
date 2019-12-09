@@ -39,6 +39,7 @@ public abstract class BaseFilter {
         mVertexShaderId = vertexShaderId;
         mFragShaderId = fragShaderId;
 
+        //1 初始化顶点坐标
         mGLVertexBuffer = ByteBuffer.allocateDirect(4 * 2 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
         mGLVertexBuffer.clear();
         float[] vertex = {
@@ -49,6 +50,7 @@ public abstract class BaseFilter {
         };
         mGLVertexBuffer.put(vertex);
 
+        //2 初始化纹理坐标
         mGLTextureBuffer = ByteBuffer.allocateDirect(4 * 2 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
         mGLTextureBuffer.clear();
         float[] texture = {

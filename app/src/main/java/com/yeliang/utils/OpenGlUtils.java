@@ -20,7 +20,7 @@ public class OpenGlUtils {
 
         for (int texture : textures) {
             //1 绑定纹理
-            GLES20.glBindTexture(GLES20.GL_TEXTURE20, texture);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texture);
 
             //2 设置纹理过滤样式 GL_NEAREST:临近过滤，清晰看到组成纹理的像素但有颗粒感
             GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST);

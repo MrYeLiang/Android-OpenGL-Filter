@@ -82,7 +82,7 @@ public class CameraFilter extends BaseFilter {
 
         //4 fbo绑定纹理
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, mFrameBuffers[0]);
-        GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_COLOR_ATTACHMENT0, mFrameBufferTextures[0], 0);
+        GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, mFrameBufferTextures[0], 0);
 
         //5 解绑
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);

@@ -2,8 +2,6 @@ package com.yeliang.utils;
 
 import android.content.Context;
 
-import com.yeliang.R;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

@@ -107,7 +107,7 @@ public class EGLBase {
         EGL14.eglSwapBuffers(mEglDisplay, mEGlSurface);
     }
 
-    public void release(){
+    public void release() {
         EGL14.eglDestroySurface(mEglDisplay, mEGlSurface);
         EGL14.eglMakeCurrent(mEglDisplay, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_CONTEXT);
         EGL14.eglDestroyContext(mEglDisplay, mEglContext);

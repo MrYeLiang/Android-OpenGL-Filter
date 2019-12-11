@@ -6,7 +6,6 @@ import android.hardware.Camera;
 import android.util.Log;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 
 /**

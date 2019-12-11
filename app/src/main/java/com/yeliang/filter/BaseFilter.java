@@ -79,7 +79,7 @@ public abstract class BaseFilter {
     }
 
     //给着色器中的属性赋值
-    protected void initCoordinate(){
+    protected void initCoordinate() {
     }
 
     public void onReady(int width, int height) {

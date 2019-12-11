@@ -76,13 +76,13 @@ public class CommonRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFr
 
         //渲染线程EGL上下文
         EGLContext eglContext = EGL14.eglGetCurrentContext();
-        mMediaRecorder = new MediaRecorder(mSurfaceView.getContext(), "/sdcard/record.mp4",CameraHelper.mHeight,CameraHelper.mWidth,eglContext);
+        mMediaRecorder = new MediaRecorder(mSurfaceView.getContext(), "/sdcard/record.mp4", CameraHelper.mHeight, CameraHelper.mWidth, eglContext);
     }
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         mCameraFilter.onReady(width, height);
-        mScreenFilter.onReady(width,height);
+        mScreenFilter.onReady(width, height);
     }
 
 
@@ -114,7 +114,7 @@ public class CommonRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFr
         mSurfaceView.requestRender();
     }
 
-    public void startRecord(float speed){
+    void startRecord(float speed) {
         try {
             mMediaRecorder.start(speed);
         } catch (IOException e) {
@@ -122,7 +122,7 @@ public class CommonRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFr
         }
     }
 
-    public void stopRecord(){
+    void stopRecord() {
         mMediaRecorder.stop();
     }
 

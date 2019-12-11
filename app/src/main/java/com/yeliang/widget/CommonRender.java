@@ -2,12 +2,17 @@ package com.yeliang.widget;
 
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.opengl.EGL14;
+import android.opengl.EGLContext;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 
 import com.yeliang.filter.CameraFilter;
 import com.yeliang.filter.ScreenFilter;
+import com.yeliang.record.MediaRecorder;
 import com.yeliang.utils.CameraHelper;
+
+import java.io.IOException;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -33,6 +38,7 @@ public class CommonRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFr
     private ScreenFilter mScreenFilter;
 
     private float[] mtx = new float[16];
+    private MediaRecorder mMediaRecorder;
 
     CommonRender(GLSurfaceView surfaceView) {
         mSurfaceView = surfaceView;
@@ -67,6 +73,10 @@ public class CommonRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFr
 
         mCameraFilter = new CameraFilter(mSurfaceView.getContext());
         mScreenFilter = new ScreenFilter(mSurfaceView.getContext());
+
+        //渲染线程EGL上下文
+        EGLContext eglContext = EGL14.eglGetCurrentContext();
+        mMediaRecorder = new MediaRecorder(mSurfaceView.getContext(), "/sdcard/record.mp4",CameraHelper.mHeight,CameraHelper.mWidth,eglContext);
     }
 
     @Override
@@ -94,6 +104,8 @@ public class CommonRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFr
 
         int textureId = mCameraFilter.onDrawFrame(mTextures[0]);
         mScreenFilter.onDrawFrame(textureId);
+
+        mMediaRecorder.encodeFrame(textureId, mSurfaceTexture.getTimestamp());
     }
 
     /*==========================================================*/
@@ -101,4 +113,17 @@ public class CommonRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFr
     public void onFrameAvailable(SurfaceTexture surfaceTexture) {
         mSurfaceView.requestRender();
     }
+
+    public void startRecord(float speed){
+        try {
+            mMediaRecorder.start(speed);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void stopRecord(){
+        mMediaRecorder.stop();
+    }
+
 }

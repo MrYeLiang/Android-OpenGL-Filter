@@ -20,13 +20,23 @@
         android:text="打开相机" />
 
     <Button
+        android:id="@+id/btn_record"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/bg_btn_circle"
+        android:text="按住拍" />
+
+    <Button
         android:id="@+id/btn_close_camera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_marginBottom="20dp"
-        android:layout_marginRight="50dp"
+        android:layout_marginRight="20dp"
         android:text="关闭相机" />
 
 </RelativeLayout>

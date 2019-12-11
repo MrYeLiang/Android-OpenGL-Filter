@@ -39,7 +39,7 @@ public class ScreenFilter extends BaseFilter {
         //4 激活纹理
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
 
-        //5 绑定纹理
+        //5 解绑
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId);
         GLES20.glUniform1i(vTexture, 0);
 

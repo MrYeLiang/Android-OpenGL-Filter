@@ -30,4 +30,12 @@ public class CommonSurfaceView extends GLSurfaceView {
     public void closeCamera() {
         mCommonRender.closeCamera();
     }
+
+    public void startRecord(){
+        mCommonRender.startRecord(1.0f);
+    }
+
+    public void stopRecord(){
+        mCommonRender.stopRecord();
+    }
 }

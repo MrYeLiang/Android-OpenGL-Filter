@@ -21,8 +21,8 @@ public class CameraHelper {
     private SurfaceTexture mSurfaceTexture;
     private Camera mCamera;
 
-    private int mWidth;
-    private int mHeight;
+    public static int mWidth;
+    public static int mHeight;
     private byte[] buffer;
 
     private boolean mCameraIsOpen;

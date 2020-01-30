@@ -7,6 +7,8 @@ import android.opengl.EGLContext;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 
+import com.yeliang.face.FaceTrack;
+import com.yeliang.filter.BigEyeFilter;
 import com.yeliang.filter.CameraFilter;
 import com.yeliang.filter.ScreenFilter;
 import com.yeliang.record.MediaRecorder;
@@ -24,7 +26,8 @@ import javax.microedition.khronos.opengles.GL10;
  * Description:
  */
 
-public class CommonRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameAvailableListener {
+public class CommonRender implements
+        GLSurfaceView.Renderer, SurfaceTexture.OnFrameAvailableListener, Camera.PreviewCallback {
 
     private GLSurfaceView mSurfaceView;
 
@@ -36,9 +39,12 @@ public class CommonRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFr
 
     private CameraFilter mCameraFilter;
     private ScreenFilter mScreenFilter;
+    private BigEyeFilter mBigEyeFilter;
 
     private float[] mtx = new float[16];
     private MediaRecorder mMediaRecorder;
+
+    private FaceTrack mFaceTrack;
 
     CommonRender(GLSurfaceView surfaceView) {
         mSurfaceView = surfaceView;
@@ -47,9 +53,11 @@ public class CommonRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFr
     void openCamera(int width, int height) {
         if (mCameraHelper == null) {
             mCameraHelper = new CameraHelper(Camera.CameraInfo.CAMERA_FACING_BACK, width, height);
+            mFaceTrack.setCameraHelper(mCameraHelper);
         }
 
         mCameraHelper.startPreview(mSurfaceTexture);
+        mCameraHelper.setPreviewCallBack(this);
     }
 
     void closeCamera() {
@@ -61,7 +69,6 @@ public class CommonRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFr
 
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
-
         mTextures = new int[1];
         //1 创建Texture
         GLES20.glGenTextures(mTextures.length, mTextures, 0);
@@ -73,6 +80,7 @@ public class CommonRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFr
 
         mCameraFilter = new CameraFilter(mSurfaceView.getContext());
         mScreenFilter = new ScreenFilter(mSurfaceView.getContext());
+        mBigEyeFilter = new BigEyeFilter(mSurfaceView.getContext());
 
         //渲染线程EGL上下文
         EGLContext eglContext = EGL14.eglGetCurrentContext();
@@ -81,8 +89,17 @@ public class CommonRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFr
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
+
+        //创建跟踪器
+        mFaceTrack = new FaceTrack("/sdcard/lbpcascade_frontalface.xml",
+                "/sdcard/seeta_fa_v1.1.bin");
+
+        //启动追踪器
+        mFaceTrack.startTrack();
+
         mCameraFilter.onReady(width, height);
         mScreenFilter.onReady(width, height);
+        mBigEyeFilter.onReady(width, height);
     }
 
 
@@ -103,6 +120,9 @@ public class CommonRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFr
         mCameraFilter.setMatrix(mtx);
 
         int textureId = mCameraFilter.onDrawFrame(mTextures[0]);
+        mBigEyeFilter.setFace(mFaceTrack.getFace());
+        textureId = mBigEyeFilter.onDrawFrame(textureId);
+
         mScreenFilter.onDrawFrame(textureId);
 
         mMediaRecorder.encodeFrame(textureId, mSurfaceTexture.getTimestamp());
@@ -126,4 +146,17 @@ public class CommonRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFr
         mMediaRecorder.stop();
     }
 
+    public void onSurfaceDestroyed() {
+
+        if (mCameraHelper != null) {
+            mCameraHelper.stopPreview();
+        }
+
+        mFaceTrack.stopTrack();
+    }
+
+    @Override
+    public void onPreviewFrame(byte[] data, Camera camera) {
+        mFaceTrack.detecor(data);
+    }
 }

@@ -14,9 +14,8 @@ import com.yeliang.utils.OpenGlUtils;
  * Description:
  */
 
-public class CameraFilter extends BaseFilter {
-    private int[] mFrameBuffers;
-    private int[] mFrameBufferTextures;
+public class CameraFilter extends BaseFrameFilter {
+
     private float[] matrix;
 
     public CameraFilter(Context context) {
@@ -31,62 +30,14 @@ public class CameraFilter extends BaseFilter {
     protected void initCoordinate() {
         mGLTextureBuffer.clear();
 
-        float[] texture = {
+        float[] TEXTURE = {
                 0.0f, 0.0f,
                 0.0f, 1.0f,
                 1.0f, 0.0f,
                 1.0f, 1.0f
         };
 
-        mGLTextureBuffer.put(texture);
-    }
-
-    @Override
-    public void release() {
-        super.release();
-        destroyFrameBuffers();
-    }
-
-    private void destroyFrameBuffers() {
-        if (mFrameBufferTextures != null) {
-            GLES20.glDeleteTextures(1, mFrameBufferTextures, 0);
-            mFrameBufferTextures = null;
-        }
-
-        if (mFrameBuffers != null) {
-            GLES20.glDeleteFramebuffers(1, mFrameBuffers, 0);
-            mFrameBuffers = null;
-        }
-    }
-
-    @Override
-    public void onReady(int width, int height) {
-        super.onReady(width, height);
-        if (mFrameBuffers != null) {
-            destroyFrameBuffers();
-        }
-
-        mFrameBuffers = new int[1];
-
-        //1 创建fbo
-        GLES20.glGenFramebuffers(mFrameBuffers.length, mFrameBuffers, 0);
-
-        mFrameBufferTextures = new int[1];
-
-        //2 创建fbo纹理
-        OpenGlUtils.glConfigureTextures(mFrameBufferTextures);
-
-        //3 绑定纹理
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mFrameBufferTextures[0]);
-        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, mOutputWidth, mOutputHeight, 0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null);
-
-        //4 fbo绑定纹理
-        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, mFrameBuffers[0]);
-        GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, mFrameBufferTextures[0], 0);
-
-        //5 解绑
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
-        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
+        mGLTextureBuffer.put(TEXTURE);
     }
 
     @Override

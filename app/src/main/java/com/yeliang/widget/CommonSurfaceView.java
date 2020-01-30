@@ -3,6 +3,7 @@ package com.yeliang.widget;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
+import android.view.SurfaceHolder;
 
 /**
  * Author: yeliang
@@ -21,6 +22,12 @@ public class CommonSurfaceView extends GLSurfaceView {
         mCommonRender = new CommonRender(this);
         setRenderer(mCommonRender);
         setRenderMode(RENDERMODE_WHEN_DIRTY);
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        super.surfaceDestroyed(holder);
+        mCommonRender.onSurfaceDestroyed();
     }
 
     public void openCamera() {

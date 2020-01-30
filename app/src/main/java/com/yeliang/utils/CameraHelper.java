@@ -15,7 +15,10 @@ import java.util.List;
  * Description:
  */
 
-public class CameraHelper {
+public class CameraHelper implements Camera.PreviewCallback {
+    public final static int WIDTH = 480;
+    public final static int HEIGHT = 640;
+
     private final int mCameraId;
     private SurfaceTexture mSurfaceTexture;
     private Camera mCamera;
@@ -25,6 +28,8 @@ public class CameraHelper {
     private byte[] buffer;
 
     private boolean mCameraIsOpen;
+
+    private Camera.PreviewCallback mPreviewCallBack;
 
     public CameraHelper(int cameraId, int previewWidth, int previewHeight) {
         mCameraId = cameraId;
@@ -78,6 +83,7 @@ public class CameraHelper {
 
         buffer = new byte[mWidth * mHeight * 3 / 2];
         mCamera.addCallbackBuffer(buffer);
+        mCamera.setPreviewCallbackWithBuffer(this);
 
         Log.i("CameraHelper", "setPreviewSize mWidth = " + mWidth + "mHeight = " + mHeight);
         parameters.setPreviewSize(mWidth, mHeight);
@@ -89,5 +95,24 @@ public class CameraHelper {
             mCamera.stopPreview();
             mCamera.release();
         }
+    }
+
+    public int getCameraId() {
+        return mCameraId;
+    }
+
+
+
+    public void setPreviewCallBack(Camera.PreviewCallback previewCallBack) {
+        mPreviewCallBack = previewCallBack;
+    }
+
+    @Override
+    public void onPreviewFrame(byte[] data, Camera camera) {
+        if(null != mPreviewCallBack){
+            mPreviewCallBack.onPreviewFrame(data, camera);
+        }
+
+        camera.addCallbackBuffer(buffer);
     }
 }

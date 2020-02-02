@@ -91,10 +91,10 @@ public class BigEyeFilter extends BaseFrameFilter {
         x = landmarks[4] / mFace.imgWidth;
         y = landmarks[5] / mFace.imgHeight;
 
-        left.clear();
-        left.put(x);
-        left.put(y);
-        left.position(0);
+        right.clear();
+        right.put(x);
+        right.put(y);
+        right.position(0);
         GLES20.glUniform2fv(right_eye, 1, right);
 
         //6 激活并绑定纹理

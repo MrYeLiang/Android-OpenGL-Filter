@@ -3,6 +3,8 @@ package com.yeliang.utils;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.util.Log;
 
 import java.io.IOException;
@@ -16,8 +18,6 @@ import java.util.List;
  */
 
 public class CameraHelper implements Camera.PreviewCallback {
-    public final static int WIDTH = 640;
-    public final static int HEIGHT = 480;
 
     private final int mCameraId;
     private SurfaceTexture mSurfaceTexture;
@@ -50,14 +50,46 @@ public class CameraHelper implements Camera.PreviewCallback {
         parameters.setPreviewFormat(ImageFormat.NV21);
         setPreviewSize(parameters);
         mCamera.setParameters(parameters);
+        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+
 
         try {
             mCamera.setPreviewTexture(mSurfaceTexture);
             mCamera.startPreview();
+
+            loopAutoFocus();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+    }
+
+    private HandlerThread mThread;
+    private Handler mHandler;
+
+    private void loopAutoFocus() {
+        mThread = new HandlerThread("thread_focus");
+        mThread.start();
+
+        mHandler = new Handler(mThread.getLooper());
+        mHandler.postDelayed(mRunnable, 1000);
+    }
+
+    Runnable mRunnable = new Runnable() {
+        @Override
+        public void run() {
+            beginFocus();
+        }
+    };
+
+    private void beginFocus() {
+        mCamera.autoFocus(new Camera.AutoFocusCallback() {
+            @Override
+            public void onAutoFocus(boolean success, Camera camera) {
+                camera.cancelAutoFocus();
+                mHandler.postDelayed(mRunnable, 1000);
+            }
+        });
     }
 
     private void setPreviewSize(Camera.Parameters parameters) {
@@ -68,8 +100,6 @@ public class CameraHelper implements Camera.PreviewCallback {
         supportedPreviewSizes.remove(0);
 
         for (Camera.Size next : supportedPreviewSizes) {
-            Log.i("CameraHelper", "support mWidth = " + next.width + "mHeight = " + next.height);
-
             int n = Math.abs(next.height * next.width - mWidth * mHeight);
             if (n < m) {
                 m = n;
@@ -89,10 +119,12 @@ public class CameraHelper implements Camera.PreviewCallback {
     }
 
     public void stopPreview() {
-        if (mCamera != null) {
+        if (mCamera != null && mCameraIsOpen) {
             mCameraIsOpen = false;
             mCamera.stopPreview();
             mCamera.release();
+
+            mThread.quitSafely();
         }
     }
 
@@ -101,14 +133,13 @@ public class CameraHelper implements Camera.PreviewCallback {
     }
 
 
-
     public void setPreviewCallBack(Camera.PreviewCallback previewCallBack) {
         mPreviewCallBack = previewCallBack;
     }
 
     @Override
     public void onPreviewFrame(byte[] data, Camera camera) {
-        if(null != mPreviewCallBack){
+        if (null != mPreviewCallBack) {
             mPreviewCallBack.onPreviewFrame(data, camera);
         }
 

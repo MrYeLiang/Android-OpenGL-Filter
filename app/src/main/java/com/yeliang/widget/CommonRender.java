@@ -52,8 +52,10 @@ public class CommonRender implements
     }
 
     void openCamera(int width, int height) {
+
+
         if (mCameraHelper == null) {
-            mCameraHelper = new CameraHelper(Camera.CameraInfo.CAMERA_FACING_FRONT,640,480);
+            mCameraHelper = new CameraHelper(Camera.CameraInfo.CAMERA_FACING_BACK, width, height);
             mFaceTrack.setCameraHelper(mCameraHelper);
         }
 
@@ -85,7 +87,7 @@ public class CommonRender implements
 
         //渲染线程EGL上下文
         EGLContext eglContext = EGL14.eglGetCurrentContext();
-        mMediaRecorder = new MediaRecorder(mSurfaceView.getContext(), "/sdcard/record.mp4", CameraHelper.WIDTH, CameraHelper.HEIGHT, eglContext);
+        mMediaRecorder = new MediaRecorder(mSurfaceView.getContext(), "/sdcard/record.mp4", eglContext);
     }
 
     @Override
@@ -101,6 +103,8 @@ public class CommonRender implements
         mCameraFilter.onReady(width, height);
         mScreenFilter.onReady(width, height);
         mBigEyeFilter.onReady(width, height);
+
+        Log.i("render", "onSurfaceChanged");
     }
 
 
@@ -135,7 +139,7 @@ public class CommonRender implements
         mSurfaceView.requestRender();
     }
 
-    void startRecord(float speed) {
+    public void startRecord(float speed) {
         try {
             mMediaRecorder.start(speed);
         } catch (IOException e) {
@@ -143,7 +147,7 @@ public class CommonRender implements
         }
     }
 
-    void stopRecord() {
+    public void stopRecord() {
         mMediaRecorder.stop();
     }
 
@@ -158,7 +162,7 @@ public class CommonRender implements
 
     @Override
     public void onPreviewFrame(byte[] data, Camera camera) {
-        Log.i("render", "data.size = " + data.length);
+        //Log.i("render", "data.size = " + data.length);
         mFaceTrack.detecor(data);
     }
 }

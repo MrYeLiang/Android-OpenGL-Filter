@@ -11,6 +11,8 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.view.Surface;
 
+import com.yeliang.utils.CameraHelper;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
@@ -40,15 +42,15 @@ public class MediaRecorder {
     private boolean isStart;
     private int index;
 
-    public MediaRecorder(Context context, String path, int width, int height, EGLContext eglContext) {
+    public MediaRecorder(Context context, String path, EGLContext eglContext) {
         mContext = context;
         mPath = path;
-        mWidth = width;
-        mHeight = height;
         mEglContext = eglContext;
     }
 
     public void start(float speed) throws IOException {
+        mWidth = CameraHelper.mWidth;
+        mHeight = CameraHelper.mHeight;
 
         if (mWidth == 0) {
             mWidth = 1080;

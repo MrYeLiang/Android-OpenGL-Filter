@@ -25,6 +25,9 @@ public class FaceTrack {
 
     private Face mFace;
 
+    private int mWidth;
+    private int mHeight;
+
     public void setCameraHelper(CameraHelper cameraHelper) {
         mCameraHelper = cameraHelper;
     }
@@ -32,7 +35,6 @@ public class FaceTrack {
     public FaceTrack(String model, String seeta) {
         self = native_create(model, seeta);
 
-        Log.i("detector", "self = " + self);
         mHandlerThread = new HandlerThread("track");
         mHandlerThread.start();
 
@@ -40,14 +42,19 @@ public class FaceTrack {
             @Override
             public void handleMessage(Message msg) {
                 synchronized (FaceTrack.this) {
+                    if (mCameraHelper == null) {
+                        return;
+                    }
 
-                    Log.i("detector A", "self = " + self + ", msg.obj" + msg.obj.toString() + ", cameraId = " + mCameraHelper.getCameraId());
-                    mFace = native_detector(self, (byte[]) msg.obj, mCameraHelper.getCameraId(), CameraHelper.WIDTH, CameraHelper.HEIGHT);
-
-                    Log.i("detector B", "Face = " + mFace);
+                    mFace = native_detector(self, (byte[]) msg.obj, mCameraHelper.getCameraId(), CameraHelper.mWidth, CameraHelper.mHeight);
                 }
             }
         };
+    }
+
+    public void setSize(int width, int height) {
+        mWidth = width;
+        mHeight = height;
     }
 
     public void startTrack() {

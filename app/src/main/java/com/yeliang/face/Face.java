@@ -19,7 +19,7 @@ public class Face {
     public int imgWidth;
     public int imgHeight;
 
-    public Face(float[] landmarks, int width, int height, int imgWidth, int imgHeight) {
+    public Face(int width, int height, int imgWidth, int imgHeight,float[] landmarks) {
         this.landmarks = landmarks;
         this.width = width;
         this.height = height;

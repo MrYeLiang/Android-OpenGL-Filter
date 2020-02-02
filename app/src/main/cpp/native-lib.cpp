@@ -89,7 +89,7 @@ Java_com_yeliang_face_FaceTrack_native_1detector(JNIEnv *env, jobject instance, 
 
         for(int i = 0, j = 0; i < size; j++){
             float f[2] = {rects[j].x, rects[j].y};
-            env->SetFloatArrayRegion(floatArray, 1, 2, f);
+            env->SetFloatArrayRegion(floatArray, i, 2, f);
             i += 2;
         }
 
@@ -121,27 +121,3 @@ Java_com_yeliang_face_FaceTrack_native_1create(JNIEnv *env, jobject instance, js
 
     return reinterpret_cast<jlong>(faceTrack);
 }
-
-
-
-/*cmake_minimum_required(VERSION 3.4.1)
-
-add_library(native-lib
-
-            SHARED
-
-            src/main/cpp/native-lib.cpp
-            src/main/cpp/FaceTrack.cpp )
-
-include_directories(include)
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -L${CMAKE_SOURCE_DIR}/jniLibs/${ANDROID_ABI}")
-
-add_subdirectory(FaceAlignment)
-
-include_directories(FaceAlignment/include)
-
-target_link_libraries( native-lib
-                       opencv_java3
-                       seeta_fa_lib
-                       log )*/

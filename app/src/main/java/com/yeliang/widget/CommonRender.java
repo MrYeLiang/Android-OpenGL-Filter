@@ -6,6 +6,7 @@ import android.opengl.EGL14;
 import android.opengl.EGLContext;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import android.util.Log;
 
 import com.yeliang.face.FaceTrack;
 import com.yeliang.filter.BigEyeFilter;
@@ -52,7 +53,7 @@ public class CommonRender implements
 
     void openCamera(int width, int height) {
         if (mCameraHelper == null) {
-            mCameraHelper = new CameraHelper(Camera.CameraInfo.CAMERA_FACING_BACK, width, height);
+            mCameraHelper = new CameraHelper(Camera.CameraInfo.CAMERA_FACING_FRONT,640,480);
             mFaceTrack.setCameraHelper(mCameraHelper);
         }
 
@@ -84,7 +85,7 @@ public class CommonRender implements
 
         //渲染线程EGL上下文
         EGLContext eglContext = EGL14.eglGetCurrentContext();
-        mMediaRecorder = new MediaRecorder(mSurfaceView.getContext(), "/sdcard/record.mp4", CameraHelper.mHeight, CameraHelper.mWidth, eglContext);
+        mMediaRecorder = new MediaRecorder(mSurfaceView.getContext(), "/sdcard/record.mp4", CameraHelper.WIDTH, CameraHelper.HEIGHT, eglContext);
     }
 
     @Override
@@ -157,6 +158,7 @@ public class CommonRender implements
 
     @Override
     public void onPreviewFrame(byte[] data, Camera camera) {
+        Log.i("render", "data.size = " + data.length);
         mFaceTrack.detecor(data);
     }
 }

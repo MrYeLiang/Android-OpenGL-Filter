@@ -16,8 +16,8 @@ import java.util.List;
  */
 
 public class CameraHelper implements Camera.PreviewCallback {
-    public final static int WIDTH = 480;
-    public final static int HEIGHT = 640;
+    public final static int WIDTH = 640;
+    public final static int HEIGHT = 480;
 
     private final int mCameraId;
     private SurfaceTexture mSurfaceTexture;
@@ -48,7 +48,6 @@ public class CameraHelper implements Camera.PreviewCallback {
 
         Camera.Parameters parameters = mCamera.getParameters();
         parameters.setPreviewFormat(ImageFormat.NV21);
-        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
         setPreviewSize(parameters);
         mCamera.setParameters(parameters);
 

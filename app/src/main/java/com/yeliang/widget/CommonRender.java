@@ -8,10 +8,12 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 
+import com.yeliang.face.Face;
 import com.yeliang.face.FaceTrack;
 import com.yeliang.filter.BigEyeFilter;
 import com.yeliang.filter.CameraFilter;
 import com.yeliang.filter.ScreenFilter;
+import com.yeliang.filter.StickFilter;
 import com.yeliang.record.MediaRecorder;
 import com.yeliang.utils.CameraHelper;
 
@@ -41,11 +43,14 @@ public class CommonRender implements
     private CameraFilter mCameraFilter;
     private ScreenFilter mScreenFilter;
     private BigEyeFilter mBigEyeFilter;
+    private StickFilter mStickFilter;
 
     private float[] mtx = new float[16];
     private MediaRecorder mMediaRecorder;
 
     private FaceTrack mFaceTrack;
+
+
 
     CommonRender(GLSurfaceView surfaceView) {
         mSurfaceView = surfaceView;
@@ -84,6 +89,7 @@ public class CommonRender implements
         mCameraFilter = new CameraFilter(mSurfaceView.getContext());
         mScreenFilter = new ScreenFilter(mSurfaceView.getContext());
         mBigEyeFilter = new BigEyeFilter(mSurfaceView.getContext());
+        mStickFilter = new StickFilter(mSurfaceView.getContext());
 
         //渲染线程EGL上下文
         EGLContext eglContext = EGL14.eglGetCurrentContext();
@@ -103,6 +109,7 @@ public class CommonRender implements
         mCameraFilter.onReady(width, height);
         mScreenFilter.onReady(width, height);
         mBigEyeFilter.onReady(width, height);
+        mStickFilter.onReady(width, height);
 
         Log.i("render", "onSurfaceChanged");
     }
@@ -124,9 +131,17 @@ public class CommonRender implements
 
         mCameraFilter.setMatrix(mtx);
 
+        //1 摄像头采集层纹理
         int textureId = mCameraFilter.onDrawFrame(mTextures[0]);
-        mBigEyeFilter.setFace(mFaceTrack.getFace());
+
+        //2 大眼纹理
+        Face face = mFaceTrack.getFace();
+        mBigEyeFilter.setFace(face);
         textureId = mBigEyeFilter.onDrawFrame(textureId);
+
+        //3 贴纸纹理
+        mStickFilter.setFace(face);
+        textureId = mStickFilter.onDrawFrame(textureId);
 
         mScreenFilter.onDrawFrame(textureId);
 

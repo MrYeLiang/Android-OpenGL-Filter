@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.yeliang.face.Face;
 import com.yeliang.face.FaceTrack;
+import com.yeliang.filter.BeautyFilter;
 import com.yeliang.filter.BigEyeFilter;
 import com.yeliang.filter.CameraFilter;
 import com.yeliang.filter.ScreenFilter;
@@ -44,6 +45,7 @@ public class CommonRender implements
     private ScreenFilter mScreenFilter;
     private BigEyeFilter mBigEyeFilter;
     private StickFilter mStickFilter;
+    private BeautyFilter mBeautyFilter;
 
     private float[] mtx = new float[16];
     private MediaRecorder mMediaRecorder;
@@ -90,6 +92,7 @@ public class CommonRender implements
         mScreenFilter = new ScreenFilter(mSurfaceView.getContext());
         mBigEyeFilter = new BigEyeFilter(mSurfaceView.getContext());
         mStickFilter = new StickFilter(mSurfaceView.getContext());
+        mBeautyFilter = new BeautyFilter(mSurfaceView.getContext());
 
         //渲染线程EGL上下文
         EGLContext eglContext = EGL14.eglGetCurrentContext();
@@ -110,6 +113,7 @@ public class CommonRender implements
         mScreenFilter.onReady(width, height);
         mBigEyeFilter.onReady(width, height);
         mStickFilter.onReady(width, height);
+        mBeautyFilter.onReady(width, height);
 
         Log.i("render", "onSurfaceChanged");
     }
@@ -142,6 +146,8 @@ public class CommonRender implements
         //3 贴纸纹理
         mStickFilter.setFace(face);
         textureId = mStickFilter.onDrawFrame(textureId);
+
+        textureId = mBeautyFilter.onDrawFrame(textureId);
 
         mScreenFilter.onDrawFrame(textureId);
 

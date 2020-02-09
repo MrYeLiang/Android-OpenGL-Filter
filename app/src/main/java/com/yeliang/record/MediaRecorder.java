@@ -49,8 +49,8 @@ public class MediaRecorder {
     }
 
     public void start(float speed) throws IOException {
-        mWidth = CameraHelper.mWidth;
-        mHeight = CameraHelper.mHeight;
+        mWidth = CameraHelper.mHeight;
+        mHeight = CameraHelper.mWidth;
 
         if (mWidth == 0) {
             mWidth = 1080;

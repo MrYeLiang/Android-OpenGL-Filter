@@ -60,7 +60,7 @@ public class CommonRender implements
 
 
         if (mCameraHelper == null) {
-            mCameraHelper = new CameraHelper(Camera.CameraInfo.CAMERA_FACING_BACK, width, height);
+            mCameraHelper = new CameraHelper(Camera.CameraInfo.CAMERA_FACING_FRONT, width, height);
             mFaceTrack.setCameraHelper(mCameraHelper);
         }
 

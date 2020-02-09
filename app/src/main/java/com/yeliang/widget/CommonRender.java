@@ -52,7 +52,7 @@ public class CommonRender implements
 
     private FaceTrack mFaceTrack;
 
-
+    private boolean isOpenBeauty;
 
     CommonRender(GLSurfaceView surfaceView) {
         mSurfaceView = surfaceView;
@@ -147,7 +147,9 @@ public class CommonRender implements
         mStickFilter.setFace(face);
         textureId = mStickFilter.onDrawFrame(textureId);
 
-        textureId = mBeautyFilter.onDrawFrame(textureId);
+        if(isOpenBeauty){
+            textureId = mBeautyFilter.onDrawFrame(textureId);
+        }
 
         mScreenFilter.onDrawFrame(textureId);
 
@@ -185,5 +187,13 @@ public class CommonRender implements
     public void onPreviewFrame(byte[] data, Camera camera) {
         //Log.i("render", "data.size = " + data.length);
         mFaceTrack.detecor(data);
+    }
+
+    public void closeBeauty() {
+        isOpenBeauty = false;
+    }
+
+    public void openBeauty() {
+        isOpenBeauty = true;
     }
 }

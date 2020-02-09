@@ -10,6 +10,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 
 import com.yeliang.widget.CommonSurfaceView;
 
@@ -20,6 +21,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static String TAG = "MainActivity";
 
     private boolean mCameraIsOpen;
+    private boolean mBeautyIsOpen;
+
+    private Button btnRecord;
+    private Button btnOpenCamera;
+    private Button btnBeauty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +37,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         setContentView(R.layout.activity_main);
         mSurfaceView = findViewById(R.id.surfaceview);
-        findViewById(R.id.btn_open_camera).setOnClickListener(this);
-        findViewById(R.id.btn_close_camera).setOnClickListener(this);
-        findViewById(R.id.btn_record).setOnTouchListener(this);
+
+        btnOpenCamera = findViewById(R.id.btn_open_camera);
+        btnOpenCamera.setOnClickListener(this);
+
+        btnBeauty = findViewById(R.id.btn_open_beauty);
+        btnBeauty.setOnClickListener(this);
+
+        btnRecord = findViewById(R.id.btn_record);
+        btnRecord.setOnTouchListener(this);
 
         requestPermission();
     }
@@ -54,13 +66,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_open_camera:
-                mCameraIsOpen = true;
-                mSurfaceView.openCamera();
+                openOrCloseCamera();
                 break;
-            case R.id.btn_close_camera:
-                mCameraIsOpen = false;
-                mSurfaceView.closeCamera();
+            case R.id.btn_open_beauty:
+                openOrCloseBeauty();
                 break;
+        }
+    }
+
+    private void openOrCloseBeauty() {
+        if (mBeautyIsOpen) {
+            mBeautyIsOpen = false;
+            btnBeauty.setText("开启美颜");
+            mSurfaceView.closeBeauty();
+        } else {
+            mBeautyIsOpen = true;
+            btnBeauty.setText("关闭美颜");
+            mSurfaceView.openBeauty();
+            ;
+        }
+    }
+
+    private void openOrCloseCamera() {
+        if (mCameraIsOpen) {
+            mCameraIsOpen = false;
+            mSurfaceView.closeCamera();
+            btnOpenCamera.setText("打开相机");
+
+        } else {
+            mCameraIsOpen = true;
+            mSurfaceView.openCamera();
+            btnOpenCamera.setText("关闭相机");
         }
     }
 
@@ -80,12 +116,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case MotionEvent.ACTION_DOWN:
                 Log.i(TAG, "onTouch ACTION_DOWN");
                 mSurfaceView.startRecord();
-
+                btnRecord.setBackground(getDrawable(R.drawable.bg_btn_circle_green));
                 break;
             case MotionEvent.ACTION_UP:
                 Log.i(TAG, "onTouch ACTION_UP");
             case MotionEvent.ACTION_CANCEL:
                 mSurfaceView.stopRecord();
+                btnRecord.setBackground(getDrawable(R.drawable.bg_btn_circle_red));
                 break;
         }
 

@@ -15,8 +15,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="20dp"
         android:layout_marginLeft="20dp"
+        android:layout_marginBottom="20dp"
         android:text="打开相机" />
 
     <Button
@@ -26,17 +26,18 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="15dp"
-        android:background="@drawable/bg_btn_circle"
+        android:background="@drawable/bg_btn_circle_red"
         android:text="按住拍" />
 
     <Button
-        android:id="@+id/btn_close_camera"
+        android:id="@+id/btn_open_beauty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="20dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:text="关闭相机" />
+        android:layout_marginBottom="20dp"
+        android:text="开启美颜" />
 
 </RelativeLayout>

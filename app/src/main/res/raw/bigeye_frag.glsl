@@ -14,7 +14,7 @@ float fs(float r, float rmax){
 //coord:输入采样点 eye:眼睛坐标点  rmax:最大作用半径
 //这个方法的目的是重新返回一个采样点的坐标，来实现放大效果
 vec2 newCoord(vec2 coord, vec2 eye, float rmax){
-    vec2 newCoord = coord;
+    vec2 new_coord = coord;
 
     //1 算出当前采样点的坐标与眼睛的距离
     float r = distance(coord, eye);
@@ -24,11 +24,11 @@ vec2 newCoord(vec2 coord, vec2 eye, float rmax){
         //2 套用放大公式 即根据 当前采样点与眼睛的距离  和  作用半径 算出一个系数
         float fsr = fs(r, rmax);
 
-        //3 用这个系数来求得新坐标点的位置 newCoord - eye = fsr*(coord - eye)
-        newCoord = fsr * (coord - eye) + eye;
+        //3 用这个系数来求得新坐标点的位置 new_coord - eye = fsr*(coord - eye)
+        new_coord = fsr * (coord - eye) + eye;
     }
 
-    return newCoord;
+    return new_coord;
 }
 
 void main() {
@@ -36,12 +36,12 @@ void main() {
     float rmax = distance(left_eye, right_eye) / 2.0;
 
     //2.1  计算左眼放大处理后的采样点坐标
-    vec2 newCoord = newCoord(aCoord, left_eye, rmax);
+    vec2 new_coord = newCoord(aCoord, left_eye, rmax);
 
     //2.2  计算右眼放大处理后的采样点坐标
-    newCoord = newCoord(newCoord, right_eye, rmax);
+    new_coord = newCoord(new_coord, right_eye, rmax);
 
     //3 将重新求得的采样点坐标传给片元着色器
-    gl_FragColor = texture2D(vTexture, newCoord);
+    gl_FragColor = texture2D(vTexture, new_coord);
 
 }

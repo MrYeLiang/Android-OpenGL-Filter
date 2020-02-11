@@ -20,6 +20,15 @@
         android:text="打开相机" />
 
     <Button
+        android:id="@+id/btn_switch_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="70dp"
+        android:text="切换摄像头" />
+
+    <Button
         android:id="@+id/btn_record"
         android:layout_width="60dp"
         android:layout_height="60dp"

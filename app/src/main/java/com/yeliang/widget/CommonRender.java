@@ -62,11 +62,11 @@ public class CommonRender implements
 
 
         if (mCameraHelper == null) {
-            mCameraHelper = new CameraHelper(Camera.CameraInfo.CAMERA_FACING_FRONT, width, height);
+            mCameraHelper = new CameraHelper(Camera.CameraInfo.CAMERA_FACING_FRONT, width, height, mSurfaceTexture);
             mFaceTrack.setCameraHelper(mCameraHelper);
         }
 
-        mCameraHelper.startPreview(mSurfaceTexture);
+        mCameraHelper.startPreview();
         mCameraHelper.setPreviewCallBack(this);
     }
 
@@ -147,7 +147,7 @@ public class CommonRender implements
         mStickFilter.setFace(face);
         textureId = mStickFilter.onDrawFrame(textureId);
 
-        if(isOpenBeauty){
+        if (isOpenBeauty) {
             textureId = mBeautyFilter.onDrawFrame(textureId);
         }
 
@@ -168,6 +168,10 @@ public class CommonRender implements
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void switchCamera(){
+        mCameraHelper.switchCamera();
     }
 
     public void stopRecord() {

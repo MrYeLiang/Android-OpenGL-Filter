@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnOpenCamera = findViewById(R.id.btn_open_camera);
         btnOpenCamera.setOnClickListener(this);
 
+        findViewById(R.id.btn_switch_camera).setOnClickListener(this);
+
         btnBeauty = findViewById(R.id.btn_open_beauty);
         btnBeauty.setOnClickListener(this);
 
@@ -70,6 +72,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_open_beauty:
                 openOrCloseBeauty();
+                break;
+            case R.id.btn_switch_camera:
+                mSurfaceView.swichCamera();
                 break;
         }
     }

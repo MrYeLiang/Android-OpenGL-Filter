@@ -19,7 +19,7 @@ import java.util.List;
 
 public class CameraHelper implements Camera.PreviewCallback {
 
-    private final int mCameraId;
+    private int mCameraId;
     private SurfaceTexture mSurfaceTexture;
     private Camera mCamera;
 
@@ -31,18 +31,20 @@ public class CameraHelper implements Camera.PreviewCallback {
 
     private Camera.PreviewCallback mPreviewCallBack;
 
-    public CameraHelper(int cameraId, int previewWidth, int previewHeight) {
+    public CameraHelper(int cameraId, int previewWidth, int previewHeight, SurfaceTexture surfaceTexture) {
         mCameraId = cameraId;
         mWidth = previewWidth;
         mHeight = previewHeight;
+
+        mSurfaceTexture = surfaceTexture;
     }
 
-    public void startPreview(SurfaceTexture surfaceTexture) {
+    public void startPreview() {
         if (mCameraIsOpen) {
             return;
         }
         mCameraIsOpen = true;
-        mSurfaceTexture = surfaceTexture;
+
 
         mCamera = Camera.open(mCameraId);
 
@@ -83,6 +85,10 @@ public class CameraHelper implements Camera.PreviewCallback {
     };
 
     private void beginFocus() {
+        if (!mCameraIsOpen) {
+            return;
+        }
+
         mCamera.autoFocus(new Camera.AutoFocusCallback() {
             @Override
             public void onAutoFocus(boolean success, Camera camera) {
@@ -116,6 +122,16 @@ public class CameraHelper implements Camera.PreviewCallback {
 
         Log.i("CameraHelper", "setPreviewSize mWidth = " + mWidth + "mHeight = " + mHeight);
         parameters.setPreviewSize(mWidth, mHeight);
+    }
+
+    public void switchCamera() {
+        if (mCameraId == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+            mCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
+        } else {
+            mCameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
+        }
+        stopPreview();
+        startPreview();
     }
 
     public void stopPreview() {

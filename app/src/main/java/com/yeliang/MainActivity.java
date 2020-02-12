@@ -12,6 +12,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 
+import com.yeliang.widget.CommonRender;
 import com.yeliang.widget.CommonSurfaceView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, View.OnTouchListener {
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 openOrCloseBeauty();
                 break;
             case R.id.btn_switch_camera:
-                mSurfaceView.swichCamera();
+                getCommonRender().switchCamera();
                 break;
         }
     }
@@ -83,11 +84,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (mBeautyIsOpen) {
             mBeautyIsOpen = false;
             btnBeauty.setText("开启美颜");
-            mSurfaceView.closeBeauty();
+            getCommonRender().closeBeauty();
         } else {
             mBeautyIsOpen = true;
             btnBeauty.setText("关闭美颜");
-            mSurfaceView.openBeauty();
+            getCommonRender().openBeauty();
             ;
         }
     }
@@ -95,12 +96,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void openOrCloseCamera() {
         if (mCameraIsOpen) {
             mCameraIsOpen = false;
-            mSurfaceView.closeCamera();
+            getCommonRender().closeCamera();
             btnOpenCamera.setText("打开相机");
 
         } else {
             mCameraIsOpen = true;
-            mSurfaceView.openCamera();
+            getCommonRender().openCamera(mSurfaceView.getHeight(), mSurfaceView.getWidth());
             btnOpenCamera.setText("关闭相机");
         }
     }
@@ -108,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
-        mSurfaceView.closeCamera();
+        getCommonRender().closeCamera();
         mCameraIsOpen = false;
     }
 
@@ -120,17 +121,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 Log.i(TAG, "onTouch ACTION_DOWN");
-                mSurfaceView.startRecord();
+                getCommonRender().startRecord(1.f);
                 btnRecord.setBackground(getDrawable(R.drawable.bg_btn_circle_green));
                 break;
             case MotionEvent.ACTION_UP:
                 Log.i(TAG, "onTouch ACTION_UP");
             case MotionEvent.ACTION_CANCEL:
-                mSurfaceView.stopRecord();
+                getCommonRender().stopRecord();
                 btnRecord.setBackground(getDrawable(R.drawable.bg_btn_circle_red));
                 break;
         }
 
         return false;
+    }
+
+    private CommonRender getCommonRender() {
+        return mSurfaceView.getRender();
     }
 }

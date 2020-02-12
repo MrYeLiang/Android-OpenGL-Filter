@@ -30,31 +30,7 @@ public class CommonSurfaceView extends GLSurfaceView {
         mCommonRender.onSurfaceDestroyed();
     }
 
-    public void openCamera() {
-        mCommonRender.openCamera(getHeight(), getWidth());
-    }
-
-    public void swichCamera(){
-        mCommonRender.switchCamera();
-    }
-
-    public void closeCamera() {
-        mCommonRender.closeCamera();
-    }
-
-    public void openBeauty(){
-        mCommonRender.openBeauty();
-    }
-
-    public void closeBeauty(){
-        mCommonRender.closeBeauty();
-    }
-
-    public void startRecord(){
-        mCommonRender.startRecord(1.0f);
-    }
-
-    public void stopRecord(){
-        mCommonRender.stopRecord();
+    public CommonRender getRender() {
+        return mCommonRender;
     }
 }

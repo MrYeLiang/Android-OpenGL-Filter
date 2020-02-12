@@ -58,7 +58,7 @@ public class CommonRender implements
         mSurfaceView = surfaceView;
     }
 
-    void openCamera(int width, int height) {
+    public void openCamera(int width, int height) {
         if (mCameraHelper == null) {
             mCameraHelper = new CameraHelper(Camera.CameraInfo.CAMERA_FACING_FRONT, width, height, mSurfaceTexture);
             mFaceTrack.setCameraHelper(mCameraHelper);
@@ -68,7 +68,7 @@ public class CommonRender implements
         mCameraHelper.setPreviewCallBack(this);
     }
 
-    void closeCamera() {
+    public void closeCamera() {
         if (mCameraHelper != null) {
             mCameraHelper.stopPreview();
         }

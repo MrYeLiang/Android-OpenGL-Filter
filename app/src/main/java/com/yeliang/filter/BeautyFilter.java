@@ -24,19 +24,6 @@ public class BeautyFilter extends BaseFrameFilter {
     }
 
     @Override
-    protected void initCoordinate() {
-        mGLTextureBuffer.clear();
-
-        float[] TEXTURE = {
-                0.0f, 0.0f,
-                1.0f, 0.0f,
-                0.0f, 1.0f,
-                1.0f, 1.0f
-        };
-        mGLTextureBuffer.put(TEXTURE);
-    }
-
-    @Override
     public int onDrawFrame(int textureId) {
         //1 设置窗口大小
         GLES20.glViewport(0, 0, mOutputWidth, mOutputHeight);

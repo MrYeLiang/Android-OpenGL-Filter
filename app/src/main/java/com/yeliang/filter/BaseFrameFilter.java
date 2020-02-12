@@ -17,6 +17,19 @@ public class BaseFrameFilter extends BaseFilter {
         super(context, vertexShaderId, fragShaderId);
     }
 
+    @Override
+    protected void initCoordinate() {
+        mGLTextureBuffer.clear();
+
+        float[] TEXTURE = {
+                0.0f, 0.0f,
+                1.0f, 0.0f,
+                0.0f, 1.0f,
+                1.0f, 1.0f
+        };
+        mGLTextureBuffer.put(TEXTURE);
+    }
+
     private void destroyFrameBuffers() {
         if (mFrameBufferTextures != null) {
             GLES20.glDeleteTextures(1, mFrameBufferTextures, 0);

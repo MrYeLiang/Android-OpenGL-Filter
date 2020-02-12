@@ -59,8 +59,6 @@ public class CommonRender implements
     }
 
     void openCamera(int width, int height) {
-
-
         if (mCameraHelper == null) {
             mCameraHelper = new CameraHelper(Camera.CameraInfo.CAMERA_FACING_FRONT, width, height, mSurfaceTexture);
             mFaceTrack.setCameraHelper(mCameraHelper);
@@ -80,7 +78,7 @@ public class CommonRender implements
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
         mTextures = new int[1];
-        //1 创建Texture
+        //1 创建Texture数组
         GLES20.glGenTextures(mTextures.length, mTextures, 0);
 
         //2 创建SurfaceTexture
@@ -189,7 +187,6 @@ public class CommonRender implements
 
     @Override
     public void onPreviewFrame(byte[] data, Camera camera) {
-        //Log.i("render", "data.size = " + data.length);
         mFaceTrack.detecor(data);
     }
 

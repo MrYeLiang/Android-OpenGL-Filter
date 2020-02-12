@@ -45,21 +45,31 @@ public class CameraHelper implements Camera.PreviewCallback {
         }
         mCameraIsOpen = true;
 
-
+        //1 打开相机
         mCamera = Camera.open(mCameraId);
 
+        //2 设置预览参数
         Camera.Parameters parameters = mCamera.getParameters();
         parameters.setPreviewFormat(ImageFormat.NV21);
         setPreviewSize(parameters);
         mCamera.setParameters(parameters);
-        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
 
+        //3 设置数据回调
+        buffer = new byte[mWidth * mHeight * 3 / 2];
+        mCamera.addCallbackBuffer(buffer);
+        mCamera.setPreviewCallbackWithBuffer(this);
 
         try {
+            //4 设置预览纹理
             mCamera.setPreviewTexture(mSurfaceTexture);
+
+            //5 开始预览
             mCamera.startPreview();
 
-            loopAutoFocus();
+            //6 设置自动聚焦
+            if (mCameraId == Camera.CameraInfo.CAMERA_FACING_BACK) {
+                loopAutoFocus();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -69,6 +79,13 @@ public class CameraHelper implements Camera.PreviewCallback {
     private HandlerThread mThread;
     private Handler mHandler;
 
+    Runnable mRunnable = new Runnable() {
+        @Override
+        public void run() {
+            beginFocus();
+        }
+    };
+
     private void loopAutoFocus() {
         mThread = new HandlerThread("thread_focus");
         mThread.start();
@@ -76,13 +93,6 @@ public class CameraHelper implements Camera.PreviewCallback {
         mHandler = new Handler(mThread.getLooper());
         mHandler.postDelayed(mRunnable, 1000);
     }
-
-    Runnable mRunnable = new Runnable() {
-        @Override
-        public void run() {
-            beginFocus();
-        }
-    };
 
     private void beginFocus() {
         if (!mCameraIsOpen) {
@@ -116,10 +126,6 @@ public class CameraHelper implements Camera.PreviewCallback {
         mWidth = size.width;
         mHeight = size.height;
 
-        buffer = new byte[mWidth * mHeight * 3 / 2];
-        mCamera.addCallbackBuffer(buffer);
-        mCamera.setPreviewCallbackWithBuffer(this);
-
         Log.i("CameraHelper", "setPreviewSize mWidth = " + mWidth + "mHeight = " + mHeight);
         parameters.setPreviewSize(mWidth, mHeight);
     }
@@ -140,14 +146,15 @@ public class CameraHelper implements Camera.PreviewCallback {
             mCamera.stopPreview();
             mCamera.release();
 
-            mThread.quitSafely();
+            if (mThread != null) {
+                mThread.quitSafely();
+            }
         }
     }
 
     public int getCameraId() {
         return mCameraId;
     }
-
 
     public void setPreviewCallBack(Camera.PreviewCallback previewCallBack) {
         mPreviewCallBack = previewCallBack;

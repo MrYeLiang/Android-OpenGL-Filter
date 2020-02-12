@@ -39,19 +39,6 @@ public class BigEyeFilter extends BaseFrameFilter {
     }
 
     @Override
-    protected void initCoordinate() {
-        mGLTextureBuffer.clear();
-
-        float[] TEXTURE = {
-                0.0f, 0.0f,
-                1.0f, 0.0f,
-                0.0f, 1.0f,
-                1.0f, 1.0f
-        };
-        mGLTextureBuffer.put(TEXTURE);
-    }
-
-    @Override
     public int onDrawFrame(int textureId) {
         if (null == mFace) {
             return textureId;
